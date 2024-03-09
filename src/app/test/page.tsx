@@ -1,9 +1,5 @@
-import React from 'react'
-
-const test = () => {
+export default function Test () {
   return (
-    <h1>Ganbold's first page</h1>
+    <h2 className={`mb-3 text-2xl font-semibold`}>Ganbold's first page</h2>
   )
 }
-
-export default test
