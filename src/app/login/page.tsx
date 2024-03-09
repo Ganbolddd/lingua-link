@@ -1,6 +1,5 @@
-// src/app/login/page.tsx
 import LoginForm from "./../../../components/LoginForm.tsx";
-import Options from "./../../../components/Options.client"; // Import the client component directly
+import Options from "./../../../components/Options.client";
 import LeftSection from "./../../../components/LeftSection.tsx";
 
 const Login = () => {
