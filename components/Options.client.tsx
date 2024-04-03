@@ -13,14 +13,14 @@ const Options: React.FC = () => {
 
   return (
     <div className="flex flex-col items-center">
-      <a className="text-blue-500 hover:text-blue-700" onClick={toggleModal}>
+      <a className="text-blue-500 hover:text-blue-700">
         Forgot Password?
       </a>
       <hr className="w-full border-t border-gray-400 my-4" />
       <a className="text-blue-500 hover:text-blue-700" onClick={toggleModal}>
         Create Account
+        {showModal && <CreateAccountModal onClose={toggleModal} />}
       </a>
-      {showModal && <CreateAccountModal onClose={toggleModal} />}
     </div>
   );
 };

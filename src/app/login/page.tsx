@@ -8,7 +8,7 @@ const Login = () => {
       <LeftSection />
       <div className="flex-col">
         <LoginForm />
-        <Options /> {/* Render the client component */}
+        <Options />
       </div>
     </div>
   );

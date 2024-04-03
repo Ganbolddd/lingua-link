@@ -1,5 +1,3 @@
-// CreateAccountModal.tsx
-
 import React from 'react';
 
 interface Props {
@@ -8,7 +6,7 @@ interface Props {
 
 const CreateAccountModal: React.FC<Props> = ({ onClose }) => {
   return (
-    <div className="fixed top-0 left-0 w-full h-full flex items-center justify-center bg-gray-800 bg-opacity-75 z-50">
+    <div className="w-full h-full flex items-center justify-center bg-gray-800 bg-opacity-75 z-50">
       <div className="bg-white p-8 rounded-lg">
         <h2 className="text-2xl font-bold mb-4">Create Account</h2>
         {/* Add your content for the Create Account modal here */}
