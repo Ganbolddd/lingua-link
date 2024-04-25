@@ -1,0 +1,120 @@
+import React, { useEffect, useRef, useState } from "react";
+import VideoPlayerControls from "./VideoPlayerControls";
+import videosData from "../utils/videos.json"; // Import video data
+
+//"^14.1.0"
+
+interface VideoPlayerProps {
+  id: string;
+  src: string;
+}
+
+const VideoPlayer: React.FC<VideoPlayerProps> = ({ id, src }) => {
+  const [videoData, setVideoData] = useState<{ src: string } | null>(null);
+  console.log("🚀 ~ videoData:", videoData);
+  const [isPaused, setIsPaused] = useState(false);
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const [videoDuration, setVideoDuration] = useState<number>();
+  const [videoProgress, setVideoProgress] = useState<number>(0);
+
+  useEffect(() => {
+    // Fetch video data based on ID
+    const video = videosData.find((video) => video.id === id);
+    if (video) {
+      setVideoData(video);
+    }
+  }, [id]);
+
+  useEffect(() => {
+    const video = videoRef.current;
+    if (video) {
+      setVideoDuration(video.duration);
+    }
+  }, [videoData]); // Trigger effect when videoData changes
+
+  useEffect(() => {
+    if (isPaused) return;
+    const currentTime = videoRef.current?.currentTime;
+    if (videoDuration != null && currentTime != null) {
+      let loadingTimeout = setTimeout(() => {
+        if (videoProgress == currentTime / videoDuration) {
+          setVideoProgress((prev) => prev + 0.000001);
+        } else {
+          setVideoProgress(currentTime / videoDuration);
+        }
+      }, 10);
+
+      return () => {
+        clearTimeout(loadingTimeout);
+      };
+    }
+  }, [videoProgress, videoDuration, isPaused]);
+
+  const togglePlayPause = () => {
+    const video = videoRef.current;
+    if (video) {
+      setIsPaused(!video.paused);
+      video.paused ? video.play() : video.pause();
+    }
+  };
+
+  const updateUrlWithVideoId = (videoId: string) => {
+    let newId = Number(videoId) + 1; 
+    const currentUrl = window.location.href.split('/')[0];
+    const newUrl = `${newId}`;
+    window.history.replaceState({}, document.title, newUrl);
+  };
+
+  const handleScroll = () => {
+    // Your logic to determine the new video ID based on scroll position
+    // For now, let's use the existing video ID
+    const newVideoId = id;
+    updateUrlWithVideoId(newVideoId);
+  };
+
+  useEffect(() => {
+    // Add scroll event listener to window
+    const scrollListener = () => {
+      handleScroll();
+    };
+    window.addEventListener('scroll', scrollListener);
+    
+    // Remove event listener when component unmounts
+    return () => {
+      window.removeEventListener('scroll', scrollListener);
+    };
+  }, []);
+
+  return (
+    <main>
+      {videoData ? (
+        <div className="relative w-[90%] max-w-6xl mx-auto my-8 rounded-xl overflow-hidden">
+          <div className="absolute top-4 right-4">
+            <VideoPlayerControls
+              progress={videoProgress}
+              isPaused={isPaused}
+              onPlayPause={togglePlayPause}
+              size={undefined}
+              width={undefined}
+            />
+          </div>
+          <video
+            className="w-full"
+            ref={videoRef}
+            onClick={togglePlayPause}
+            loop
+            muted
+            autoPlay
+          >
+            <source src={videoData.src} type="video/mp4" />
+            Your browser does not support the video tag.
+          </video>
+        </div>
+      ) : (
+        <div>Loading...</div>
+      )}
+    </main>
+  );
+};
+
+export default VideoPlayer;

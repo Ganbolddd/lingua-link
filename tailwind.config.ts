@@ -15,6 +15,9 @@ const config: Config = {
       },
     },
   },
+  aspectRatio: {
+    'video': '16/9',
+  },
   plugins: [],
 };
 export default config;

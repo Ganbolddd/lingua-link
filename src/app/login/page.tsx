@@ -1,9 +1,9 @@
-import LoginForm from "./../../../components/LoginForm.tsx";
+import LoginForm from "./../../../components/LoginForm";
 import Options from "./../../../components/Options.client";
-import LeftSection from "./../../../components/LeftSection.tsx";
+import LeftSection from "./../../../components/LeftSection";
 
 const Login = () => {
-  return (
+  return ( 
     <div className="flex justify-center items-center h-screen bg-gray-100 mx-auto gap-10">
       <LeftSection />
       <div className="flex-col">
