@@ -2,6 +2,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import VideoPlayer from "./VideoPlayer";
+import videoContents from "@/utils/videos.json";
 
 interface VideoContent {
   id: string;
@@ -11,28 +12,6 @@ interface VideoContent {
 }
 
 const VideoList = () => {
-  const videoContents: VideoContent[] = [
-    {
-      id: "1",
-      url: "/assets/video1.mp4",
-      title: "Video 1 Title",
-      description: "Video 1 Description",
-    },
-    {
-      id: "2",
-      url: "/assets/video2.mp4",
-      title: "Video 2 Title",
-      description: "Video 2 Description",
-    },
-    {
-      id: "3",
-      url: "/assets/video3.mp4",
-      title: "Video 3 Title",
-      description: "Video 3 Description",
-    },
-    // Add more video objects as needed
-  ];
-
   const [visibleVideos, setVisibleVideos] = useState<number[]>([]);
   const containerRef = useRef<HTMLDivElement>(null);
 
@@ -75,7 +54,7 @@ const VideoList = () => {
           >
             <div className="aspect-video">
               {visibleVideos.includes(index) && (
-                <VideoPlayer src={content.url} id={content.id} />
+                <VideoPlayer src={content.src} id={content.id} />
               )}
             </div>
           </div>

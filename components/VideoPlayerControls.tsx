@@ -18,7 +18,7 @@ const VideoPlayerControls: React.FC<VideoPlayerControlsProps> = ({
   const center = size / 2;
   const radius = center - width;
   const dashArray = 2 * Math.PI * radius;
-  const dashOffset = dashArray * (1 - progress);
+  const dashOffset = isNaN(dashArray * (1 - progress)) ? 0 : dashArray * (1 - progress);
 
   return (
     <div className="relative flex justify-center items-center">
