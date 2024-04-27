@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import VideoPlayerControls from "./VideoPlayerControls";
-import videosData from "../utils/videos.json"; // Import video data
+// import videosData from "../utils/videos.json"; // Import video data
+import { getStorage, ref, getDownloadURL } from "firebase/storage";
 
 //"^14.1.0"
 
@@ -11,19 +12,18 @@ interface VideoPlayerProps {
 
 const VideoPlayer: React.FC<VideoPlayerProps> = ({ id, src }) => {
   const [videoData, setVideoData] = useState<{ src: string } | null>(null);
-  console.log("🚀 ~ videoData:", videoData);
   const [isPaused, setIsPaused] = useState(false);
   const videoRef = useRef<HTMLVideoElement>(null);
   const [videoDuration, setVideoDuration] = useState<number>();
   const [videoProgress, setVideoProgress] = useState<number>(0);
 
-  useEffect(() => {
-    // Fetch video data based on ID
-    const video = videosData.find((video) => video.id === id);
-    if (video) {
-      setVideoData(video);
-    }
-  }, [id]);
+  // useEffect(() => {
+  //   // Fetch video data based on ID
+  //   const video = videosData.find((video) => video.id === id);
+  //   if (video) {
+  //     setVideoData(video);
+  //   }
+  // }, [id]);
 
   useEffect(() => {
     const video = videoRef.current;
@@ -58,35 +58,30 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ id, src }) => {
     }
   };
 
-
   return (
     <main>
-      {videoData ? (
-        <div className="relative w-[90%] max-w-6xl mx-auto my-8 rounded-xl overflow-hidden">
-          <div className="absolute top-4 right-4">
-            <VideoPlayerControls
-              progress={videoProgress}
-              isPaused={isPaused}
-              onPlayPause={togglePlayPause}
-              size={undefined}
-              width={undefined}
-            />
-          </div>
-          <video
-            className="w-full"
-            ref={videoRef}
-            onClick={togglePlayPause}
-            loop
-            muted
-            autoPlay
-          >
-            <source src={videoData.src} type="video/mp4" />
-            Your browser does not support the video tag.
-          </video>
+      <div className="relative w-[90%] max-w-6xl mx-auto my-8 rounded-xl overflow-hidden">
+        <div className="absolute top-4 right-4">
+          <VideoPlayerControls
+            progress={videoProgress}
+            isPaused={isPaused}
+            onPlayPause={togglePlayPause}
+            size={undefined}
+            width={undefined}
+          />
         </div>
-      ) : (
-        <div>Loading...</div>
-      )}
+        <video
+          className="w-full"
+          ref={videoRef}
+          onClick={togglePlayPause}
+          loop
+          muted
+          autoPlay
+        >
+          <source src={src} type="video/mp4" />
+          Your browser does not support the video tag.
+        </video>
+      </div>
     </main>
   );
 };

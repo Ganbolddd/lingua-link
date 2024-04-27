@@ -1,10 +1,30 @@
-'use client';
-import React, { useEffect, useState } from 'react';
-import VideoList from '@/components/VideoList';
+"use client";
+import React, { useEffect, useState } from "react";
+import { getDownloadURL, getStorage, ref } from "firebase/storage";
+import VideoPlayer from "@/components/VideoPlayer";
 const VideoPage: React.FC = () => {
-
   const [scrollPosition, setScrollPosition] = useState(0);
+  const [videoUrl, setVideoUrl] = useState("");
+
   let id = 1;
+  useEffect(() => {
+    const fetchVideoUrl = async () => {
+      try {
+        const storage = getStorage();
+        const videoRefere = ref(
+          storage,
+          "https://console.firebase.google.com/project/lingualink-79fad/storage/lingualink-79fad.appspot.com/files"
+        );
+        const url = await getDownloadURL(videoRefere);
+        console.log("🚀 ~ fetchVideoUrl ~ url:", url);
+        setVideoUrl(url);
+      } catch (error) {
+        console.error("Error fetching video URL:", error);
+      }
+    };
+
+    fetchVideoUrl();
+  }, []);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -13,11 +33,11 @@ const VideoPage: React.FC = () => {
     };
 
     // Add scroll event listener when component mounts
-    window.addEventListener('scroll', handleScroll);
+    window.addEventListener("scroll", handleScroll);
 
     // Remove scroll event listener when component unmounts
     return () => {
-      window.removeEventListener('scroll', handleScroll);
+      window.removeEventListener("scroll", handleScroll);
     };
   }, []); // Empty dependency array means this effect runs only once on mount
 
@@ -34,9 +54,10 @@ const VideoPage: React.FC = () => {
   }, [scrollPosition]); // This effect runs whenever scrollPosition changes
 
   return (
-    <div className='w-full h-screen'>
+    <div className="w-full h-screen">
       <h1>Video Player Example</h1>
-      <VideoList/>
+      {videoUrl} ? <VideoPlayer src={videoUrl} id={""} /> :{" "}
+      <div>Loading...</div>
     </div>
   );
 };

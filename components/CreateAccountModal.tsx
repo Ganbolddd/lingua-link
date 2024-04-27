@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { UserAuth } from "@/src/app/context/AuthContext";
-import { useRouter } from "next/router";
+import { useRouter } from "next/navigation";
 
 interface Props {
   onClose: () => void;
