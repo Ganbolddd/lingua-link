@@ -3,42 +3,24 @@ import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import VideoPlayer from "../../../../components/VideoPlayer";
 import { UserAuth } from "../../context/AuthContext";
-import { getStorage, ref, getDownloadURL, listAll } from "firebase/storage";
-
-interface Video {
-  id: string;
-  src: string;
-}
+// import videos from "@/utils/videos.json";
+import { getDownloadURL, getStorage, ref } from "firebase/storage";
 
 const VideoPage = ({ params }: { params: { videoId: string } }) => {
   const { user, logOut } = UserAuth();
-  // console.log("🚀 ~ VideoPage ~ user:", user);
   const router = useRouter();
   const [loadingNextVideo, setLoadingNextVideo] = useState(false);
-  const [videos, setVideos] = useState<Video[]>([]);
-  console.log("🚀 ~ VideoPage ~ videos:", videos);
-  const currentVideo = videos.find((video) => video.id === params.videoId);
-  const [currentVideoId, setCurrentVideoId] = useState<string>('');
-  // console.log("Current Video:", currentVideo);
-  // console.log("Current Video Source:", currentVideo?.src);
+  const threshold = 500;
+  const [videos, setVideos] = useState([]);
 
   useEffect(() => {
     const fetchVideosFromFirebase = async () => {
       try {
         const storage = getStorage();
-        const videosRef = ref(
-          storage,
-          "gs://lingualink-79fad.appspot.com/videos/"
-        );
-        const listResult = await listAll(videosRef);
-        // console.log("🚀 ~ fetchVideosFromFirebase ~ listResult:", listResult.items.length)
-        // const videoFiles = listResult.items.filter((item) => item.kind === 'file');
+        const videosRef = ref(storage, "videos/"); // Replace with the actual path to your videos folder
         const urls = await Promise.all(
-          [...Array(listResult.items.length)].map(async (_, index) => {
-            const videoRef = ref(
-              storage,
-              `gs://lingualink-79fad.appspot.com/videos/video${index + 1}.mp4`
-            );
+          [...Array(3)].map(async (_, index) => {
+            const videoRef = ref(storage, `videos/video${index + 1}.mp4`); // Replace with the actual file paths
             const url = await getDownloadURL(videoRef);
             return { id: `${index + 1}`, src: url };
           })
@@ -51,6 +33,19 @@ const VideoPage = ({ params }: { params: { videoId: string } }) => {
 
     fetchVideosFromFirebase();
   }, []);
+  //   let lastScrollPosition = 0; // Variable to store the last scroll position
+
+  // const handleScroll = () => {
+  //   const scrollPosition = window.scrollY;
+  //   const scrollDirection = scrollPosition > lastScrollPosition ? 1 : -1;
+  //   lastScrollPosition = scrollPosition;
+
+  //   if (scrollDirection === 1 && !loadingNextVideo) {
+  //     loadNextVideo(1); // Increment
+  //   } else if (scrollDirection === -1 && !loadingNextVideo) {
+  //     loadNextVideo(-1); // Decrement
+  //   }
+  // };
 
   useEffect(() => {
     const handleKeyUp = (event: KeyboardEvent) => {
@@ -68,16 +63,37 @@ const VideoPage = ({ params }: { params: { videoId: string } }) => {
     };
   }, [params.videoId, loadingNextVideo]);
 
-  const loadNextVideo = (increment: number) => {
+  // useEffect(() => {
+  //   // Add scroll event listener to window
+  //   const scrollListener = () => {
+  //     handleScroll();
+  //   };
+  //   window.addEventListener('scroll', scrollListener);
+
+  //   // Remove event listener when component unmounts
+  //   return () => {
+  //     window.removeEventListener('scroll', scrollListener);
+  //   };
+  // }, []);
+
+  // const loadNextVideo = (increment: number) => {
+  //   setLoadingNextVideo(true);
+  //   const nextVideoId = parseInt(params.videoId) + increment;
+  //   if (nextVideoId > 0 && nextVideoId <= videos.length) {
+  //     router.replace(`/video/${nextVideoId}`, undefined);
+  //   } else {
+  //     setLoadingNextVideo(false); // Reset loading state if not navigating
+  //   }
+  // };
+
+  const loadNextVideo = (increment) => {
     setLoadingNextVideo(true);
     const currentIndex = videos.findIndex(
       (video) => video.id === params.videoId
     );
     const nextIndex = currentIndex + increment;
     if (nextIndex >= 0 && nextIndex < videos.length) {
-      const nextVideoId = videos[nextIndex].id;
-      router.replace(`/video/${nextVideoId}`, undefined, {shallow: true});
-      console.log("🚀 ~ loadNextVideo ~ {videos[nextIndex].id:", videos[nextIndex].id);
+      router.replace(`/video/${videos[nextIndex].id}`, undefined);
     } else {
       setLoadingNextVideo(false);
     }
@@ -101,13 +117,15 @@ const VideoPage = ({ params }: { params: { videoId: string } }) => {
       >
         Log out
       </div>
-      {user && currentVideo?.src ? (
+      {user ? (
         <VideoPlayer
-          src={currentVideo?.src}
-          id={currentVideoId}
+          // src={`/assets/video${params.videoId}.mp4`}
+          // id={params.videoId}
+          src={videos.find((video) => video.id === params.videoId)?.src || ""}
+          id={params.videoId}
         />
       ) : (
-        "Loading"
+        "Please login"
       )}
     </div>
   );

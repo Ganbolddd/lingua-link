@@ -1,7 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import VideoPlayerControls from "./VideoPlayerControls";
 // import videosData from "../utils/videos.json"; // Import video data
-import { getStorage, ref, getDownloadURL } from "firebase/storage";
 
 //"^14.1.0"
 
@@ -11,7 +10,8 @@ interface VideoPlayerProps {
 }
 
 const VideoPlayer: React.FC<VideoPlayerProps> = ({ id, src }) => {
-  const [videoData, setVideoData] = useState<{ src: string } | null>(null);
+  console.log("🚀 ~ src:", src)
+  // const [videoData, setVideoData] = useState<{ src: string } | null>(null);
   const [isPaused, setIsPaused] = useState(false);
   const videoRef = useRef<HTMLVideoElement>(null);
   const [videoDuration, setVideoDuration] = useState<number>();
@@ -25,12 +25,12 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ id, src }) => {
   //   }
   // }, [id]);
 
-  useEffect(() => {
-    const video = videoRef.current;
-    if (video) {
-      setVideoDuration(video.duration);
-    }
-  }, [videoData]); // Trigger effect when videoData changes
+  // useEffect(() => {
+  //   const video = videoRef.current;
+  //   if (video) {
+  //     setVideoDuration(video.duration);
+  //   }
+  // }, [videoData]); // Trigger effect when videoData changes
 
   useEffect(() => {
     if (isPaused) return;
