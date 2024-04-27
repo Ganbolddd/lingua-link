@@ -58,32 +58,6 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ id, src }) => {
     }
   };
 
-  const updateUrlWithVideoId = (videoId: string) => {
-    let newId = Number(videoId) + 1; 
-    const currentUrl = window.location.href.split('/')[0];
-    const newUrl = `${newId}`;
-    window.history.replaceState({}, document.title, newUrl);
-  };
-
-  const handleScroll = () => {
-    // Your logic to determine the new video ID based on scroll position
-    // For now, let's use the existing video ID
-    const newVideoId = id;
-    updateUrlWithVideoId(newVideoId);
-  };
-
-  useEffect(() => {
-    // Add scroll event listener to window
-    const scrollListener = () => {
-      handleScroll();
-    };
-    window.addEventListener('scroll', scrollListener);
-    
-    // Remove event listener when component unmounts
-    return () => {
-      window.removeEventListener('scroll', scrollListener);
-    };
-  }, []);
 
   return (
     <main>

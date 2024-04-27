@@ -11,29 +11,19 @@ const VideoPage = ({ params }: { params: { videoId: string } }) => {
   const [loadingNextVideo, setLoadingNextVideo] = useState(false);
   const threshold = 500;
 
-  // const handleScroll = debounce(() => {
-  //   const { scrollTop, scrollHeight, clientHeight } = document.documentElement;
-  //   if (
-  //     scrollTop + clientHeight >= scrollHeight - threshold &&
-  //     !loadingNextVideo
-  //   ) {
-  //     loadNextVideo();
-  //   }
-  //   console.log("🚀 ~ handleScroll ~ handleScroll:", scrollTop)
-  // }, 200);
+//   let lastScrollPosition = 0; // Variable to store the last scroll position
 
-  // const loadNextVideo = () => {
-  //   setLoadingNextVideo(true);
-  //   const newVideoId = parseInt(params.videoId) + 1;
-  //   router.replace(`/video/${newVideoId}`, undefined);
-  // };
+// const handleScroll = () => {
+//   const scrollPosition = window.scrollY;
+//   const scrollDirection = scrollPosition > lastScrollPosition ? 1 : -1;
+//   lastScrollPosition = scrollPosition;
 
-  // useEffect(() => {
-  //   window.addEventListener("scroll", handleScroll);
-  //   return () => {
-  //     window.removeEventListener("scroll", handleScroll);
-  //   };
-  // }, [params.videoId]);
+//   if (scrollDirection === 1 && !loadingNextVideo) {
+//     loadNextVideo(1); // Increment
+//   } else if (scrollDirection === -1 && !loadingNextVideo) {
+//     loadNextVideo(-1); // Decrement
+//   }
+// };
 
   useEffect(() => {
     const handleKeyUp = (event: KeyboardEvent) => {
@@ -50,6 +40,19 @@ const VideoPage = ({ params }: { params: { videoId: string } }) => {
       window.removeEventListener("keyup", handleKeyUp);
     };
   }, [params.videoId, loadingNextVideo]);
+
+  // useEffect(() => {
+  //   // Add scroll event listener to window
+  //   const scrollListener = () => {
+  //     handleScroll();
+  //   };
+  //   window.addEventListener('scroll', scrollListener);
+  
+  //   // Remove event listener when component unmounts
+  //   return () => {
+  //     window.removeEventListener('scroll', scrollListener);
+  //   };
+  // }, []);
 
   const loadNextVideo = (increment: number) => {
     setLoadingNextVideo(true);
