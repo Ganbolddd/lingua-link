@@ -1,4 +1,3 @@
-// Options.client.tsx
 'use client'; // This line is required to mark the component as a Client Component
 
 import React, { useState } from 'react';
@@ -13,14 +12,14 @@ const Options: React.FC = () => {
 
   return (
     <div className="flex flex-col items-center">
-      <a className="text-blue-500 hover:text-blue-700">
+      <p className="block text-gray-700 text-sm font-bold">
         Forgot Password?
-      </a>
+      </p>
       <hr className="w-full border-t border-gray-400 my-4" />
-      <a className="text-blue-500 hover:text-blue-700" onClick={toggleModal}>
+      <p className="block text-gray-700 text-sm font-bold cursor-pointer" onClick={toggleModal}>
         Create Account
         {showModal && <CreateAccountModal onClose={toggleModal} />}
-      </a>
+      </p>
     </div>
   );
 };
