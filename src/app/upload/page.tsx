@@ -1,58 +1,94 @@
-import React from "react";
+"use client";
+import React, { useState } from 'react';
+import firebase from 'firebase/compat/app';
+import 'firebase/compat/storage';
+import { initializeApp } from 'firebase/app';
+import { getStorage, ref, uploadBytesResumable, getDownloadURL } from 'firebase/storage';
+import { v4 as uuidv4 } from 'uuid';
 
-const Login = () => {
-  
+const firebaseConfig = {
+  apiKey: "AIzaSyApQRyGVS7FnbZdPY_5Do206QJ79ir7VA0",
+  authDomain: "lingualink-79fad.firebaseapp.com",
+  projectId: "lingualink-79fad",
+  storageBucket: "lingualink-79fad.appspot.com",
+  messagingSenderId: "300330680210",
+  appId: "1:300330680210:web:4b50e23be7da406a1f0b4b"
+};
+
+const app = initializeApp(firebaseConfig);
+const storage = getStorage(app);
+
+const VideoUploadPage: React.FC = () => {
+  const [selectedVideo, setSelectedVideo] = useState<File | null>(null);
+  const [uploadProgress, setUploadProgress] = useState<number | null>(null);
+  const [uploadedVideoURL, setUploadedVideoURL] = useState<string | null>(null);
+
+  const handleVideoChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (event.target.files && event.target.files[0]) {
+      setSelectedVideo(event.target.files[0]);
+    }
+  };
+
+  const handleUpload = () => {
+    if (selectedVideo) {
+      const videoUUID = uuidv4(); 
+      const videoRef = ref(storage, `videos/${videoUUID}`);
+      const uploadTask = uploadBytesResumable(videoRef, selectedVideo);
+
+      uploadTask.on(
+        'state_changed',
+        (snapshot) => {
+          const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+          setUploadProgress(progress);
+        },
+        (error) => {
+          console.error('Error uploading video:', error);
+        },
+        () => {
+          getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
+            setUploadedVideoURL(downloadURL);
+            setSelectedVideo(null);
+            setUploadProgress(null);
+          });
+        }
+      );
+    } else {
+      console.log('Please select a video before uploading.');
+    }
+  };
+
   return (
-    <div className="relative flex flex-col items-center justify-center h-screen">
-      <div className="absolute top-[25px] left-[50px] font-bold text-5xl drop-shadow-2xl text-green-600 animate-bounce w-6 h-6">LinguaLink</div>
-        <div className="box-border h-32 w-32 p-4 border-0 absolute right-[50px] absolute top-[0px]">
-        </div>
-      <div className="box-border h-[600px] w-[1300px] bg-gray-600 opacity-10 rounded-tl-[35px] 
-      absolute bottom-[0px] right-[0px]
-"></div>
-      <div className="grid grid-cols-5 gap-[60px] absolute top-[30px] right-[100px] cursor-pointer font-arial ">
-
-          <h1>Home</h1>
-          <h1>Profile</h1>
-          <h1>Upload</h1>
-          <h1>Support</h1>
-          <h1>Settings</h1>   
-
-        </div>
-
-      <div className="grid grid-rows-5 grid-flow-col gap-[50px] absolute left-[60px] top-[325px] text-[18px]  ">
-        <h1 className="font-bold text-[24px]">Profile</h1>
-        <h1>Videos</h1>
-        <h1>Information</h1>
-        <h1>Sign out</h1>
-
-      </div>
-    <div className="box-border h-[100px] w-[100px] bg-green-600 rounded-full absolute top-[150px] left-[75px]">
-
-      
-      
-    </div>
-    <div className="box-border h-[50px] w-[50px] bg-green-600 hover:bg-white  absolute top-[25px] left-[350px] rotate-45  ">
-      
-    </div>
-    <div className="absolute top-[0px] py-6">
-  <div className="container mx-auto px-4">
-    <form className="flex items-center justify-center">
-      <input className="shadow appearance-none border rounded w-full py-2 px-3 mr-4 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" type="text" placeholder="Search"></input>
-      <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" type="submit">
-        
-        Search
+    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '100vh' }}>
+      <h2>Video Upload Page</h2>
+      <input type="file" accept="video/*" onChange={handleVideoChange} style={{ marginBottom: '10px' }} />
+      <button 
+        onClick={handleUpload} 
+        disabled={!selectedVideo} 
+        style={{ 
+          borderRadius: '50%', 
+          width: '100px', 
+          height: '100px', 
+          backgroundColor: 'emerald', 
+          color: 'white', 
+          border: 'none', 
+          cursor: 'pointer',
+          fontSize: '1.5rem' 
+        }}
+      >
+        Upload
       </button>
-    </form>
-  </div>
-</div>
-
-
+      {selectedVideo && <p>Selected Video: {selectedVideo.name}</p>}
+      {uploadProgress !== null && <progress value={uploadProgress} max="100" />}
+      {uploadedVideoURL && (
+        <div>
+          <p>Video uploaded successfully!</p>
+          <p>Video URL: {uploadedVideoURL}</p>
+        </div>
+      )}
     </div>
-  
-
-  
   );
 };
 
-export default Login;
+export default VideoUploadPage;
+
+

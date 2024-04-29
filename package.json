@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@types/firebase": "^3.2.1",
     "firebase": "^10.11.1",
     "firebase-admin": "^12.1.0",
     "lodash": "^4.17.21",
@@ -17,13 +18,19 @@
     "react-dom": "^18",
     "react-infinite-scroll-component": "^6.1.0",
     "react-intersection-observer": "^9.8.2",
-    "react-query": "^3.39.3"
+    "react-query": "^3.39.3",
+    "uuid": "^9.0.1"
   },
   "devDependencies": {
+    "@firebase/app-types": "^0.9.1",
+    "@firebase/auth-types": "^0.12.1",
+    "@firebase/firestore-types": "^3.0.1",
+    "@firebase/storage-types": "^0.8.1",
     "@types/lodash": "^4.17.0",
     "@types/node": "20.11.20",
     "@types/react": "18.2.60",
     "@types/react-dom": "^18",
+    "@types/uuid": "^9.0.8",
     "autoprefixer": "^10.0.1",
     "eslint": "^8",
     "eslint-config-next": "14.1.0",
